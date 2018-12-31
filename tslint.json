@@ -1,0 +1,17 @@
+{
+  "defaultSeverity": "error",
+  "extends": "tslint-config-standard-plus",
+  "rules": {
+    "no-console": {
+       "severity": "error",
+       "options": ["log"]
+    },
+    "ordered-imports": false,
+    "no-any": false,
+    "array-bracket-spacing": false,
+    "arrow-parens": false,
+    "no-inferrable-types": true,
+    "no-null-keyword": true,
+    "no-parameter-reassignment": true
+  }
+}

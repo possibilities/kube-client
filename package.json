@@ -1,0 +1,55 @@
+{
+  "name": "kube-client",
+  "version": "0.1.0",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "rm -rf dist && tsc && ava --serial --verbose dist/**/*.test.js",
+    "build": "rm -rf dist && tsc",
+    "dev": "rm -rf dist && tsc --watch",
+    "lint": "tslint --project ."
+  },
+  "ava": {
+    "compileEnhancements": false,
+    "extensions": [
+      "ts"
+    ],
+    "require": [
+      "ts-node/register/transpile-only"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && yarn build"
+    }
+  },
+  "lint-staged": {
+    "*.ts": [
+      "tslint"
+    ]
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "fs-extra": "^7.0.1",
+    "jsonpath": "^1.0.0",
+    "stream-each": "^1.2.3"
+  },
+  "devDependencies": {
+    "@types/dedent": "^0.7.0",
+    "@types/fs-extra": "^5.0.4",
+    "@types/js-yaml": "^3.11.4",
+    "@types/jsonpath": "^0.2.0",
+    "@types/mock-fs": "^3.6.30",
+    "@types/node": "^10.12.18",
+    "@types/stream-each": "^1.2.0",
+    "ava": "^1.0.1",
+    "dedent": "^0.7.0",
+    "husky": "^1.2.1",
+    "lint-staged": "^8.1.0",
+    "mock-fs": "^4.7.0",
+    "nodemon": "^1.18.9",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-config-standard-plus": "^2.1.2",
+    "typescript": "^3.2.2"
+  }
+}
