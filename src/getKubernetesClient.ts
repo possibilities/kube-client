@@ -1,7 +1,7 @@
 import { getKubernetesConfig } from './index'
 import { EventEmitter } from 'events'
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
-import streamEach from 'stream-each'
+import eventStream from 'event-stream'
 import { IncomingMessage } from 'http'
 
 import { ResourceWatcher, KubernetesClientInstance } from './types'
@@ -20,8 +20,8 @@ const getStream = async (
     params: Object.assign(
       {},
       config.params,
-      url.endsWith('/log') ?
-        { follow: 1 }
+      url.endsWith('/log')
+        ? { follow: 1 }
         : { watch: 1 }
     )
   }
@@ -42,25 +42,13 @@ const prepareWatch = (get: any) =>
       stream.destroy()
     }
 
-    // Defer processing so that vent subscriptions capture initial events
-    setImmediate(() => {
-      const isLogResource = url.endsWith('/log')
-      streamEach(stream, (lines: Buffer, next: any) => {
-        lines.toString()
-          .trim()
-          .split('\n')
-          .forEach(line => {
-            if (isLogResource) {
-              vent.emit('line', line)
-            } else {
-              const resource = JSON.parse(line)
-              vent.emit(resource.type.toLowerCase(), resource.object)
-            }
-          })
-
-        next()
-      }, unwatch)
-    })
+    stream
+      .pipe(eventStream.split())
+      .pipe(eventStream.parse())
+      .pipe(eventStream.mapSync((data: any) => vent.emit(
+        data.type.toLowerCase(),
+        data.object
+      )))
 
     return Object.assign(vent, { unwatch, stream })
   }

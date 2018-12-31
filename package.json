@@ -33,18 +33,18 @@
   ],
   "dependencies": {
     "axios": "^0.18.0",
+    "event-stream": "^4.0.1",
     "fs-extra": "^7.0.1",
-    "jsonpath": "^1.0.0",
-    "stream-each": "^1.2.3"
+    "jsonpath": "^1.0.0"
   },
   "devDependencies": {
     "@types/dedent": "^0.7.0",
+    "@types/event-stream": "^3.3.34",
     "@types/fs-extra": "^5.0.4",
     "@types/js-yaml": "^3.11.4",
     "@types/jsonpath": "^0.2.0",
     "@types/mock-fs": "^3.6.30",
     "@types/node": "^10.12.18",
-    "@types/stream-each": "^1.2.0",
     "ava": "^1.0.1",
     "dedent": "^0.7.0",
     "husky": "^1.2.1",
