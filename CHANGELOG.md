@@ -1,3 +1,9 @@
+### 0.4.7 (crafted 01/02/19)
+
+Changes:
+
+  * (Mike Bannister) Include typescript definitions in package
+
 ### 0.4.6 (crafted 01/01/19)
 
 Changes:
