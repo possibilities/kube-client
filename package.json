@@ -32,7 +32,7 @@
   "files": [
     "readme.md",
     "dist/**/*.js",
-    "dist/**/*.ts.d"
+    "dist/**/*.d.ts"
   ],
   "dependencies": {
     "axios": "^0.18.0",
