@@ -1,3 +1,9 @@
+### 0.4.5 (crafted 01/01/19)
+
+Changes:
+
+  * (Mike Bannister) Simplify `waitFor` API (#3)
+
 ### 0.4.4 (crafted 01/01/19)
 
 Changes:
