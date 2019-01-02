@@ -35,7 +35,7 @@
   ],
   "dependencies": {
     "axios": "^0.18.0",
-    "event-stream": "^4.0.1",
+    "event-stream": "=3.3.4",
     "fs-extra": "^7.0.1",
     "jsonpath": "^1.0.0"
   },
