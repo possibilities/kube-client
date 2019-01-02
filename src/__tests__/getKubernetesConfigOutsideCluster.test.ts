@@ -15,7 +15,7 @@ const writeKubectlConfig = async (configString: string) => {
 test.beforeEach(() => useFakeFileSystem())
 test.afterEach(() => useFakeFileSystem.restore())
 
-test('load config with cert', async t => {
+test('loads config with cert', async t => {
   await writeKubectlConfig(dedent`
     current-context: foo
     contexts:
@@ -41,7 +41,7 @@ test('load config with cert', async t => {
   t.is(config.httpsAgent.options.cert, 'test-cert')
 })
 
-test('load config without cert', async t => {
+test('loads config without cert', async t => {
   await writeKubectlConfig(dedent`
     current-context: foo
     contexts:
@@ -63,7 +63,7 @@ test('load config without cert', async t => {
   t.is(config.httpsAgent.options.cert, undefined)
 })
 
-test('load config with access token', async t => {
+test('loads config with access token', async t => {
   await writeKubectlConfig(dedent`
     current-context: foo
     contexts:
@@ -89,7 +89,7 @@ test('load config with access token', async t => {
   )
 })
 
-test('load config without access token', async t => {
+test('loads config without access token', async t => {
   await writeKubectlConfig(dedent`
     current-context: foo
     contexts:

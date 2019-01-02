@@ -14,19 +14,34 @@ const getStream = async (
   url: string,
   config: AxiosRequestConfig = {}
 ): Promise<IncomingMessage> => {
-  const requestConfig = {
-    ...config,
-    responseType: 'stream',
-    params: Object.assign(
-      {},
-      config.params,
-      url.endsWith('/log')
-        ? { follow: 1 }
-        : { watch: 1 }
-    )
-  }
+  const requestConfig = { ...config, responseType: 'stream' }
   const response = await get(url, requestConfig)
   return response.data
+}
+
+const pipeLogStreamToVent = (
+  stream: IncomingMessage,
+  vent: EventEmitter
+) => {
+  stream
+    .pipe(eventStream.split())
+    .pipe(eventStream.mapSync((line: any) => vent.emit(
+      'line',
+      line
+    )))
+}
+
+const pipeResourceStreamToVent = (
+  stream: IncomingMessage,
+  vent: EventEmitter
+) => {
+  stream
+    .pipe(eventStream.split())
+    .pipe(eventStream.parse())
+    .pipe(eventStream.mapSync((data: any) => vent.emit(
+      data.type.toLowerCase(),
+      data.object
+    )))
 }
 
 const prepareWatch = (get: any) =>
@@ -34,21 +49,19 @@ const prepareWatch = (get: any) =>
     url: string,
     config: AxiosRequestConfig = {}
   ): Promise<ResourceWatcher> => {
-    const vent = new EventEmitter()
+    const isLogUrl = url.endsWith('/log')
+
     const stream = await getStream(get, url, config)
+
+    const vent = new EventEmitter()
+    isLogUrl
+      ? pipeLogStreamToVent(stream, vent)
+      : pipeResourceStreamToVent(stream, vent)
 
     const unwatch = () => {
       vent.removeAllListeners()
       stream.destroy()
     }
-
-    stream
-      .pipe(eventStream.split())
-      .pipe(eventStream.parse())
-      .pipe(eventStream.mapSync((data: any) => vent.emit(
-        data.type.toLowerCase(),
-        data.object
-      )))
 
     return Object.assign(vent, { unwatch, stream })
   }

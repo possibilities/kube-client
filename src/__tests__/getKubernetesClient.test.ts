@@ -6,6 +6,8 @@ import {
 } from '../index'
 import { KubernetesClientInstance } from '../types'
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
+
 const createTestPod = (
   kubernetes: KubernetesClientInstance
 ) => kubernetes.post(
@@ -198,7 +200,7 @@ test('watches resources', async t => {
   const kubernetes = await getKubernetesClient(config)
 
   const watchConfigs = await kubernetes.watch(
-    '/api/v1/namespaces/default/configmaps',
+    '/api/v1/watch/namespaces/default/configmaps',
     { params: { labelSelector: 'role=test' } }
   )
 
@@ -230,7 +232,7 @@ test('streams resources', async t => {
   const kubernetes = await getKubernetesClient(config)
 
   const streamConfigs = await kubernetes.stream(
-    '/api/v1/namespaces/default/configmaps',
+    '/api/v1/watch/namespaces/default/configmaps',
     { params: { labelSelector: 'role=test' } }
   )
 
@@ -281,7 +283,8 @@ test('watches logs', async t => {
   )
 
   const logs = await kubernetes.watch(
-    '/api/v1/namespaces/default/pods/hello-1/log'
+    '/api/v1/namespaces/default/pods/hello-1/log',
+    { params: { follow: 1 } }
   )
 
   let logLines: string[] = []
@@ -294,9 +297,13 @@ test('watches logs', async t => {
     '/api/v1/namespaces/default/pods/hello-1'
   )
 
+  // Log can take some ms to flush completely
+  await sleep(100)
+
   t.deepEqual(logLines, [
     'hi 1',
-    'hi 2'
+    'hi 2',
+    ''
   ])
 
   logs.unwatch()
