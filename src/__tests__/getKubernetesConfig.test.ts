@@ -40,7 +40,7 @@ test('loads config from environment when inside cluster', async t => {
   delete process.env.KUBERNETES_PORT_443_TCP_PORT
 })
 
-test('load config from kubectl config when outside cluster', async t => {
+test('loads config from kubectl config when outside cluster', async t => {
   await writeKubectlConfig(dedent`
     current-context: foo
     contexts:
