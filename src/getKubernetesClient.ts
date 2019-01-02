@@ -1,10 +1,10 @@
-import { getKubernetesConfig } from './index'
+import getKubernetesConfig from './getKubernetesConfig'
 import { EventEmitter } from 'events'
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios'
 import eventStream from 'event-stream'
 import { IncomingMessage } from 'http'
 
-import { ResourceWatcher, KubernetesClientInstance } from './types'
+import { ResourceWatcher, KubernetesClientInstance, Predicate, EventType } from './types'
 
 const extractData = (response: AxiosResponse): any => response.data
 const extractItems = (response: any): any => response.items || response
@@ -19,7 +19,7 @@ const getStream = async (
   return response.data
 }
 
-const pipeLogStreamToVent = (
+const pipeTextStreamToVent = (
   stream: IncomingMessage,
   vent: EventEmitter
 ) => {
@@ -31,7 +31,7 @@ const pipeLogStreamToVent = (
     )))
 }
 
-const pipeResourceStreamToVent = (
+const pipeJsonStreamToVent = (
   stream: IncomingMessage,
   vent: EventEmitter
 ) => {
@@ -55,8 +55,8 @@ const prepareWatch = (get: any) =>
 
     const vent = new EventEmitter()
     isLogUrl
-      ? pipeLogStreamToVent(stream, vent)
-      : pipeResourceStreamToVent(stream, vent)
+      ? pipeTextStreamToVent(stream, vent)
+      : pipeJsonStreamToVent(stream, vent)
 
     const unwatch = () => {
       vent.removeAllListeners()
@@ -65,6 +65,29 @@ const prepareWatch = (get: any) =>
 
     return Object.assign(vent, { unwatch, stream })
   }
+
+const prepareWaitFor = (
+  get: any,
+  predicate: Predicate
+) => (
+  url: string,
+  config: any
+) => new Promise(async (resolve, reject) => {
+  const watch = prepareWatch(get)
+  const watchResources = await watch(url, config).catch(reject)
+  if (!watchResources) return
+
+  const onResourceChange = (eventType: EventType) => (resource: any) => {
+    if (predicate(resource, eventType)) {
+      watchResources.unwatch()
+      return resolve(resource)
+    }
+  }
+
+  watchResources.on('added', onResourceChange('added'))
+  watchResources.on('modified', onResourceChange('modified'))
+  watchResources.on('deleted', onResourceChange('deleted'))
+})
 
 const prepareResponse = (handler: any) => async (...args: any[]) =>
   extractItems(extractData(await handler(...args)))
@@ -91,6 +114,7 @@ const getKubernetesClient = async (
 
   const api = axios.create(apiConfig)
   api.interceptors.request.use(injectPatchHeader)
+
   return {
     get: prepareResponse(api.get),
     delete: prepareResponse(api.delete),
@@ -99,6 +123,7 @@ const getKubernetesClient = async (
     put: prepareResponse(api.put),
     patch: prepareResponse(api.patch),
     watch: prepareWatch(api.get),
+    waitFor: predicate => prepareWaitFor(api.get, predicate),
     stream: (url, config) => getStream(api.get, url, config)
   }
 }

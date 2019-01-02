@@ -6,7 +6,8 @@
     "test": "rm -rf dist && tsc && ava --serial --verbose dist/**/*.test.js",
     "build": "rm -rf dist && tsc",
     "dev": "rm -rf dist && tsc --watch",
-    "lint": "tslint --project ."
+    "lint": "tslint --project .",
+    "prepublish": "yarn lint"
   },
   "ava": {
     "compileEnhancements": false,
@@ -19,7 +20,8 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged && yarn build"
+      "pre-commit": "lint-staged && yarn build",
+      "pre-push": "yarn lint"
     }
   },
   "lint-staged": {
