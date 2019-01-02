@@ -1,3 +1,9 @@
+### 0.4.8 (crafted 01/02/19)
+
+Changes:
+
+  * (Mike Bannister) Repair declaration inclusion
+
 ### 0.4.7 (crafted 01/02/19)
 
 Changes:
