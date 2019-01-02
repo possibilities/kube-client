@@ -1,3 +1,9 @@
+### 0.4.4 (crafted 01/01/19)
+
+Changes:
+
+  * (Mike Bannister) Add `waitFor` helper and misc cleanup (#2)
+
 ### 0.4.3 (crafted 01/01/19)
 
 Changes:
