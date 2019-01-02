@@ -1,3 +1,9 @@
+### 0.4.6 (crafted 01/01/19)
+
+Changes:
+
+  * (Mike Bannister) Pin event-stream
+
 ### 0.4.5 (crafted 01/01/19)
 
 Changes:
