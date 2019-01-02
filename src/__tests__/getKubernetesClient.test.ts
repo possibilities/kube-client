@@ -308,3 +308,36 @@ test('watches logs', async t => {
 
   logs.unwatch()
 })
+
+test('waits for condition', async t => {
+  const config = await getKubernetesConfigOutsideCluster('minikube')
+  const kubernetes = await getKubernetesClient(config)
+
+  const runScript = dedent`
+    #!/bin/bash
+    sleep 1
+    echo hi 1
+    sleep 1
+    echo hi 2
+    exit 0
+  `
+
+  await kubernetes.post(
+    '/api/v1/namespaces/default/configmaps',
+    {
+      metadata: { name: 'run-script', labels: { role: 'test' } },
+      data: { 'run.sh': runScript }
+    }
+  )
+
+  await createTestPod(kubernetes)
+
+  const onComplete = (pod: any) =>
+    ['Failed', 'Succeeded'].includes(pod.status.phase)
+  await kubernetes.waitFor(
+    onComplete,
+    '/api/v1/watch/namespaces/default/pods/hello-1'
+  )
+
+  t.pass()
+})

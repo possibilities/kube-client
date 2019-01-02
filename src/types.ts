@@ -56,7 +56,7 @@ export interface Predicate {
 
 export interface KubernetesClientInstance {
   get (url: string, config?: AxiosRequestConfig): Promise<any>
-  waitFor (predicate: Predicate): { (url: string, config?: AxiosRequestConfig): Promise<any> }
+  waitFor (predicate: Predicate, url: string, config?: AxiosRequestConfig): Promise<any>
   watch (url: string, config?: AxiosRequestConfig): Promise<ResourceWatcher>
   stream (url: string, config?: AxiosRequestConfig): Promise<IncomingMessage>
   delete (url: string, config?: AxiosRequestConfig): Promise<any>

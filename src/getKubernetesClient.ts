@@ -67,9 +67,9 @@ const prepareWatch = (get: any) =>
   }
 
 const prepareWaitFor = (
-  get: any,
-  predicate: Predicate
+  get: any
 ) => (
+  predicate: Predicate,
   url: string,
   config: any
 ) => new Promise(async (resolve, reject) => {
@@ -123,7 +123,7 @@ const getKubernetesClient = async (
     put: prepareResponse(api.put),
     patch: prepareResponse(api.patch),
     watch: prepareWatch(api.get),
-    waitFor: predicate => prepareWaitFor(api.get, predicate),
+    waitFor: prepareWaitFor(api.get),
     stream: (url, config) => getStream(api.get, url, config)
   }
 }
