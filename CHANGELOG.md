@@ -1,3 +1,9 @@
+### 0.4.10 (crafted 01/03/19)
+
+Changes:
+
+  * (Mike Bannister) Fix return value of `upsert()`
+
 ### 0.4.9 (crafted 01/03/19)
 
 Changes:
