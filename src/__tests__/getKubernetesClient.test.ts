@@ -156,7 +156,7 @@ test('supports common methods', async t => {
 })
 
 test('supports upsert method', async t => {
-  t.plan(3)
+  t.plan(5)
 
   const config = await getKubernetesConfigOutsideCluster('minikube')
   const kubernetes = await getKubernetesClient(config)
@@ -167,20 +167,23 @@ test('supports upsert method', async t => {
   ).catch(() => undefined)
   t.falsy(configMap)
 
-  await kubernetes.upsert(
+  const upsertedConfigMapFirstUpsert = await kubernetes.upsert(
     '/api/v1/namespaces/default/configmaps',
     {
       data: { foo: 'bar' },
       metadata: { name: 'config-1', labels: { role: 'test' } }
     }
   )
+  // Be sure the returned resource is created
+  t.is(upsertedConfigMapFirstUpsert.data.foo, 'bar')
 
+  // Query it to be sure
   const configMapAfterFirstUpsert = await kubernetes.get(
     '/api/v1/namespaces/default/configmaps/config-1'
   )
   t.is(configMapAfterFirstUpsert.data.foo, 'bar')
 
-  await kubernetes.upsert(
+  const upsertedConfigMapSecondUpsert = await kubernetes.upsert(
     '/api/v1/namespaces/default/configmaps',
     {
       data: { foo: 'baz' },
@@ -192,6 +195,8 @@ test('supports upsert method', async t => {
     '/api/v1/namespaces/default/configmaps/config-1'
   )
   t.is(configMapAfterSecondUpsert.data.foo, 'baz')
+  // Be sure the returned resource is patched
+  t.is(upsertedConfigMapSecondUpsert.data.foo, 'baz')
 })
 
 test('fetches logs', async t => {
