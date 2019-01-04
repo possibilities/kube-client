@@ -89,6 +89,25 @@ const prepareWaitFor = (
   watchResources.on('deleted', onResourceChange('deleted'))
 })
 
+const prepareUpsert = (post: any, patch: any) =>
+  async (
+    url: string,
+    resource: any,
+    config: AxiosRequestConfig = {}
+  ): Promise<ResourceWatcher> => {
+    try {
+      return await post(url, resource)
+    } catch (error) {
+      if (error.response.status === 409) {
+        return patch(
+          `${url}/${resource.metadata.name}`,
+          resource
+        )
+      }
+      throw error
+    }
+  }
+
 const prepareResponse = (handler: any) => async (...args: any[]) =>
   extractItems(extractData(await handler(...args)))
 
@@ -124,7 +143,8 @@ const getKubernetesClient = async (
     patch: prepareResponse(api.patch),
     watch: prepareWatch(api.get),
     waitFor: prepareWaitFor(api.get),
-    stream: (url, config) => getStream(api.get, url, config)
+    stream: (url, config) => getStream(api.get, url, config),
+    upsert: prepareUpsert(api.post, api.patch)
   }
 }
 

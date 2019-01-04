@@ -155,6 +155,45 @@ test('supports common methods', async t => {
   t.falsy(configMapAfterDelete)
 })
 
+test('supports upsert method', async t => {
+  t.plan(3)
+
+  const config = await getKubernetesConfigOutsideCluster('minikube')
+  const kubernetes = await getKubernetesClient(config)
+
+  // Check that the config doesn't exist first
+  const configMap = await kubernetes.get(
+    '/api/v1/namespaces/default/configmaps/config-1'
+  ).catch(() => undefined)
+  t.falsy(configMap)
+
+  await kubernetes.upsert(
+    '/api/v1/namespaces/default/configmaps',
+    {
+      data: { foo: 'bar' },
+      metadata: { name: 'config-1', labels: { role: 'test' } }
+    }
+  )
+
+  const configMapAfterFirstUpsert = await kubernetes.get(
+    '/api/v1/namespaces/default/configmaps/config-1'
+  )
+  t.is(configMapAfterFirstUpsert.data.foo, 'bar')
+
+  await kubernetes.upsert(
+    '/api/v1/namespaces/default/configmaps',
+    {
+      data: { foo: 'baz' },
+      metadata: { name: 'config-1', labels: { role: 'test' } }
+    }
+  )
+
+  const configMapAfterSecondUpsert = await kubernetes.get(
+    '/api/v1/namespaces/default/configmaps/config-1'
+  )
+  t.is(configMapAfterSecondUpsert.data.foo, 'baz')
+})
+
 test('fetches logs', async t => {
   const config = await getKubernetesConfigOutsideCluster('minikube')
   const kubernetes = await getKubernetesClient(config)

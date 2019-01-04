@@ -56,12 +56,13 @@ export interface Predicate {
 
 export interface KubernetesClientInstance {
   get (url: string, config?: AxiosRequestConfig): Promise<any>
-  waitFor (predicate: Predicate, url: string, config?: AxiosRequestConfig): Promise<any>
-  watch (url: string, config?: AxiosRequestConfig): Promise<ResourceWatcher>
-  stream (url: string, config?: AxiosRequestConfig): Promise<IncomingMessage>
   delete (url: string, config?: AxiosRequestConfig): Promise<any>
   head (url: string, config?: AxiosRequestConfig): Promise<any>
   post (url: string, data?: any, config?: AxiosRequestConfig): Promise<any>
+  upsert (url: string, data?: any, config?: AxiosRequestConfig): Promise<any>
   put (url: string, data?: any, config?: AxiosRequestConfig): Promise<any>
+  watch (url: string, config?: AxiosRequestConfig): Promise<ResourceWatcher>
+  waitFor (predicate: Predicate, url: string, config?: AxiosRequestConfig): Promise<any>
+  stream (url: string, config?: AxiosRequestConfig): Promise<IncomingMessage>
   patch (url: string, data?: any, config?: AxiosRequestConfig): Promise<any>
 }
