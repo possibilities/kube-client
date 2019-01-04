@@ -1,3 +1,9 @@
+### 0.4.9 (crafted 01/03/19)
+
+Changes:
+
+  * (Mike Bannister) Add upsert method (#4)
+
 ### 0.4.8 (crafted 01/02/19)
 
 Changes:
