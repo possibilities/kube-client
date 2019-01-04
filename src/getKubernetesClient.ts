@@ -134,17 +134,20 @@ const getKubernetesClient = async (
   const api = axios.create(apiConfig)
   api.interceptors.request.use(injectPatchHeader)
 
+  const post = prepareResponse(api.post)
+  const patch = prepareResponse(api.patch)
+
   return {
+    post,
+    patch,
     get: prepareResponse(api.get),
     delete: prepareResponse(api.delete),
     head: prepareResponse(api.head),
-    post: prepareResponse(api.post),
     put: prepareResponse(api.put),
-    patch: prepareResponse(api.patch),
     watch: prepareWatch(api.get),
     waitFor: prepareWaitFor(api.get),
     stream: (url, config) => getStream(api.get, url, config),
-    upsert: prepareUpsert(api.post, api.patch)
+    upsert: prepareUpsert(post, patch)
   }
 }
 
