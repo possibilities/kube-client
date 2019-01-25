@@ -1,6 +1,6 @@
 {
   "name": "kube-client",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "main": "./dist/index.js",
   "scripts": {
     "test": "rm -rf dist && tsc && ava --serial --verbose dist/**/*.test.js",

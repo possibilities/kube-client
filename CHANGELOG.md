@@ -1,3 +1,13 @@
+### 0.4.11 (crafted 01/24/19)
+
+Changes:
+
+  * (Mike Bannister) 0.4.10
+  * (Mike Bannister) Fix return value of `upsert()`
+  * (Mike Bannister) Include context name in kubectl config (#6)
+  * (Mike Bannister) 0.4.10
+  * (Mike Bannister) Fix return value of `upsert()` (#5)
+
 ### 0.4.10 (crafted 01/03/19)
 
 Changes:
