@@ -17,6 +17,7 @@ export interface KubectlCluster {
 }
 
 export interface KubectlConfig {
+  readonly name: string
   readonly cluster: KubectlCluster
   readonly user: KubectlUser
 }

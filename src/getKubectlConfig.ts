@@ -190,6 +190,7 @@ const getKubectlConfig = async (
   }
 
   return {
+    name: currentContextName,
     user: await userView(user),
     cluster: await clusterView(cluster)
   }

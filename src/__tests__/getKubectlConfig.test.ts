@@ -39,6 +39,7 @@ test('returns current context', async t => {
   const config = await getKubectlConfig()
 
   t.deepEqual(config, {
+    name: 'foo',
     user: { name: 'bob' },
     cluster: { server: 'foo-server' }
   })
@@ -75,6 +76,7 @@ test('returns specified context', async t => {
   const config = await getKubectlConfig('bar')
 
   t.deepEqual(config, {
+    name: 'bar',
     user: { name: 'mike' },
     cluster: { server: 'bar-server' }
   })
