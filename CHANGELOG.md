@@ -1,9 +1,15 @@
+### 0.4.12 (crafted 01/31/19)
+
+Changes:
+
+  * (Mike Bannister) Fix `waitFor` hanging when no results (#7)
+
 ### 0.4.11 (crafted 01/24/19)
 
 Changes:
 
-  * (Mike Bannister) 0.4.10
   * (Mike Bannister) Fix return value of `upsert()`
+  * (Mike Bannister) 0.4.11
   * (Mike Bannister) Include context name in kubectl config (#6)
   * (Mike Bannister) 0.4.10
   * (Mike Bannister) Fix return value of `upsert()` (#5)
