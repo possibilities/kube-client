@@ -75,15 +75,17 @@ const prepareWaitFor = (
 ) => new Promise(async (resolve, reject) => {
   const watch = prepareWatch(get)
   const watchResources = await watch(url, config).catch(reject)
-  if (!watchResources) return
-
-  const onResourceChange = (eventType: EventType) => (resource: any) => {
-    if (predicate(resource, eventType)) {
-      watchResources.unwatch()
-      return resolve(resource)
-    }
+  // Local helper for release resources and resolve promise
+  const cleanup = (resource?: any) => {
+    watchResources && watchResources.unwatch()
+    resolve(resource)
   }
-
+  if (!watchResources) return cleanup()
+  // Any time a resource changes we check the predicate and then cleanup
+  // as soon as it passes
+  const onResourceChange = (eventType: EventType) => (resource: any) => {
+    if (predicate(resource, eventType)) cleanup(resource)
+  }
   watchResources.on('added', onResourceChange('added'))
   watchResources.on('modified', onResourceChange('modified'))
   watchResources.on('deleted', onResourceChange('deleted'))
